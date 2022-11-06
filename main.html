@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #news {
+            width: 100px;
+            margin: 100px auto;
+        }
+    </style>
+</head>
+
+<body onload="getCookiename()">
+    <div id="news"></div>
+</body>
+<script>
+    let newsnm=document.querySelector('#news')
+    let getCookie = function (name) {
+        let arr;
+        let reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+        if (arr = document.cookie.match(reg)) {
+            return arr[2];
+        }
+        else
+            return null;
+    };
+    function getCookiename(){
+        console.log(getCookie('name'),"登录成功")//昵称
+        newsnm.innerHTML=getCookie('name')+"登录成功"
+    }
+    
+    
+</script>
+
+</html>

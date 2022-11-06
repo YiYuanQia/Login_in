@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login in</title>
+</head>
+<style type="text/css">
+    div.wrap {
+        width: 300px;
+        margin: 100px auto;
+        border-radius: 10px;
+        border: 1px solid #000;
+    }
+
+    .wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #sign {
+        float: right;
+    }
+</style>
+</head>
+
+<body>
+    <div class="wrap">
+        <form>
+            <div class="form-group">
+                <p>
+                    账户:
+                    <input type="text" class="form-control" id="username" placeholder="请输入账户名">
+                </p>
+            </div>
+            <div class="form-group">
+                <p>
+                    密码:
+                    <input type="password" class="form-control" id="password" placeholder="请输入密码">
+                </p>
+            </div>
+            <button type="button" class="access" id="login">登录</button>
+            <button type="button" class="access" id="sign">注册</button>
+        </form>
+    </div>
+
+</body>
+<script>
+
+    let elementnm = document.querySelector('#username')
+    let elementps = document.querySelector('#password')
+    let btnlogin = document.querySelector('#login')
+    let btnsign = document.querySelector('#sign')
+
+    //查询
+    btnlogin.onclick = function () {
+        if (elementnm.value === '' || elementps.value === '') {
+            alert("账号密码不能为空")
+        }
+        fetch('https://db-api.amarea.cn/users/' + elementnm.value)
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+                console.log(data)
+                if (data.id === elementnm.value && data.password === elementps.value) {
+                    console.log(data.name)
+                    setCookie('name', data.name, 7)
+                    location.href = './main.html'
+                }
+                else {
+                    throw new Error("账号或密码错误")
+                }
+            })
+            .catch(err => alert(err))
+    }
+    let setCookie = function (name, value, day) {
+        let expires = day * 24 * 60 * 60 * 1000;
+        let exp = new Date();
+        exp.setTime(exp.getTime() + expires);
+        document.cookie = name + "=" + value + ";expires=" + exp.toUTCString();
+    }
+
+    //添加
+    btnsign.onclick = function () {
+        if (elementnm.value === '' || elementps.value === '') {
+            alert("账号密码不能为空，请输入账号密码")
+        }
+        const myHeaders = new Headers()
+        myHeaders.append("Content-Type", "application/json")
+
+        fetch('https://db-api.amarea.cn/users/',
+            {
+                method: "POST",
+                headers: myHeaders,
+                body: JSON.stringify({ id: elementnm.value, name: 'DCY', password: elementps.value })
+            })
+            .then(response => {
+                console.log(response.status)
+                if (response.status == 500) {
+                    console.log("用户已注册")
+                    throw new Error("用户已注册")
+
+                }
+
+                return response.json()
+            })
+            .then(data => {
+                console.log(data)
+                alert("注册成功")
+
+            })
+            .catch(err => alert(err))
+    }
+</script>
+
+</html>
